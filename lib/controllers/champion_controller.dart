@@ -4,7 +4,6 @@ import 'package:league_of_legends/network/remote_service.dart';
 // Controller
 // Contains functionality for Champion Data
 class ChampionController extends GetxController {
-  //
   var championList = List<dynamic>().obs;
 
   // Initialization
@@ -26,4 +25,9 @@ class ChampionController extends GetxController {
 
   // TODO: Fetch champion's details
   void fetchChampionDetail(String name) async {}
+
+  // Fetches champion's splash image URL
+  String fetchChampionSplashImageURL(String name) {
+    return RemoteServices().fetchChampionSplashURL(name);
+  }
 }

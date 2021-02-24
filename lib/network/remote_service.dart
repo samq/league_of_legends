@@ -5,15 +5,21 @@ class RemoteServices {
   // http - Make http requests (Future-based)
   // Client() - Persistent connection for multiple requests
   static var client = http.Client();
+
   // Champions JSON URL
-  static const championsJSONUrl = 'http://ddragon.leagueoflegends.com/cdn/11.4.1/data/en_US/champion.json';
+  static const championsJSONUrl =
+      'http://ddragon.leagueoflegends.com/cdn/11.4.1/data/en_US/champion.json';
+
+  // Champion Splash Image URL
+  static const championSplashDirectory =
+      'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/';
 
   // Fetches lists of available champions
   static Future<List<dynamic>> fetchChampions() async {
     var response = await client.get(championsJSONUrl);
 
     // HTTP 200 OK
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       // Parse Response
       var jsonString = response.body;
       // JSON based on Response API
@@ -30,5 +36,10 @@ class RemoteServices {
     else {
       return null;
     }
+  }
+
+  // Fetches URL for champion's splash image
+  String fetchChampionSplashURL(String name) {
+    return '${championSplashDirectory + name}_0.jpg';
   }
 }
