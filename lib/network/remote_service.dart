@@ -11,7 +11,7 @@ class RemoteServices {
       'http://ddragon.leagueoflegends.com/cdn/11.4.1/data/en_US/champion.json';
 
   // Champion Splash Image URL
-  static const championSplashDirectory =
+  static const championLoadingImageDirectory =
       'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/';
 
   // Fetches lists of available champions
@@ -39,7 +39,7 @@ class RemoteServices {
   }
 
   // Fetches URL for champion's splash image
-  String fetchChampionSplashURL(String name) {
-    return '${championSplashDirectory + name}_0.jpg';
+  String fetchChampionLoadingImageURL(String name) {
+    return '${championLoadingImageDirectory + name}_0.jpg';
   }
 }

@@ -23,11 +23,11 @@ class ChampionController extends GetxController {
     }
   }
 
-  // TODO: Fetch champion's details
-  void fetchChampionDetail(String name) async {}
+  // TODO: Fetch champion's JSON
+  void fetchChampionJSON(String name) async {}
 
   // Fetches champion's splash image URL
-  String fetchChampionSplashImageURL(String name) {
-    return RemoteServices().fetchChampionSplashURL(name);
+  String fetchChampionLoadingImageURL(String name) {
+    return RemoteServices().fetchChampionLoadingImageURL(name);
   }
 }

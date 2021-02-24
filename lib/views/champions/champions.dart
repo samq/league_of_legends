@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:league_of_legends/views/champions/supporting_views/champion_card.dart';
 import 'package:league_of_legends/controllers/champion_controller.dart';
 
 // Champions View
@@ -8,11 +9,11 @@ class Champions extends StatelessWidget {
   final String _subtitle =
       'With more than 140 champions, you\'ll find the perfect match for your play style. Master one, or master them all';
 
+  // Champion Controller - Responsible for providing data of Champion(s)
+  final ChampionController championController = Get.put(ChampionController());
+
   @override
   Widget build(BuildContext context) {
-    // Champion Controller - Responsible for providing data of Champion(s)
-    final ChampionController championController = Get.put(ChampionController());
-
     return Column(
       children: [
         // TODO: News (Horizontal Scroll)
@@ -39,49 +40,22 @@ class Champions extends StatelessWidget {
                 ),
                 // Card - Displays Champion Image and Name
                 itemBuilder: (context, index) {
-                  // Temporary Variables
-                  String championName = (championList[index] as Map)['name'];
-                  String imageName = (championList[index] as Map)['id'];
+                  String name = championList[index]['name'];
+                  String id = championList[index]['id'];
+                  String imageURL =
+                      championController.fetchChampionLoadingImageURL(id);
                   return Padding(
-                    // Padding adjusted for evenness.
-                    // TODO: Adjust padding with horizontal orientation as well
-                    // TODO: Add constants for padding values.`
-                    padding: (index % 2 == 0)
-                        ? EdgeInsets.fromLTRB(18, 9, 9, 9)
-                        : EdgeInsets.fromLTRB(9, 9, 18, 9),
-                    // Stack - For display widgets on top of one another
-                    child: Stack(
-                      alignment: Alignment.bottomLeft,
-                      children: [
-                        // Image pull via network
-                        // TODO: Add loading indicators
-                        // TODO: Cache images so that there are fewer network calls
-                        Image.network(
-                          championController
-                              .fetchChampionSplashImageURL(imageName),
-                          // TODO: fitWidth causes image to be slightly shifted vertically
-                          fit: BoxFit.fitWidth,
-                          width: double.infinity,
-                        ),
-                        // Displays the champion's name
-                        Container(
-                          color: Colors.black,
-                          padding: EdgeInsets.all(10),
-                          width: double.infinity,
-                          child: Text(
-                            '${championName.toUpperCase()}',
-                            // TODO: Alternate fontFamily (Beaufort for LOL - Serif)
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                      // Padding adjusted for evenness.
+                      // TODO: Adjust padding with horizontal orientation as well
+                      // TODO: Add constants for padding values.`
+                      padding: (index % 2 == 0)
+                          ? EdgeInsets.fromLTRB(18, 9, 9, 9)
+                          : EdgeInsets.fromLTRB(9, 9, 18, 9),
+                      // Stack - For display widgets on top of one another
+                      child: ChampionCard(
+                        name: name,
+                        imageURL: imageURL,
+                      ));
                 },
               );
             }
