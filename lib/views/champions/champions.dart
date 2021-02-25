@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:league_of_legends/views/champions/supporting_views/champion_card.dart';
 import 'package:league_of_legends/controllers/champion_controller.dart';
+import 'package:league_of_legends/views/champions/champion_details.dart';
+import 'package:league_of_legends/views/champions/supporting_views/champion_card.dart';
 
 // Champions View
 class Champions extends StatelessWidget {
@@ -45,17 +46,22 @@ class Champions extends StatelessWidget {
                   String imageURL =
                       championController.fetchChampionLoadingImageURL(id);
                   return Padding(
-                      // Padding adjusted for evenness.
-                      // TODO: Adjust padding with horizontal orientation as well
-                      // TODO: Add constants for padding values.`
-                      padding: (index % 2 == 0)
-                          ? EdgeInsets.fromLTRB(18, 9, 9, 9)
-                          : EdgeInsets.fromLTRB(9, 9, 18, 9),
-                      // Stack - For display widgets on top of one another
-                      child: ChampionCard(
-                        name: name,
-                        imageURL: imageURL,
-                      ));
+                    // Padding adjusted for evenness.
+                    // TODO: Adjust padding with horizontal orientation as well
+                    // TODO: Add constants for padding values.`
+                    padding: (index % 2 == 0)
+                        ? EdgeInsets.fromLTRB(18, 9, 9, 9)
+                        : EdgeInsets.fromLTRB(9, 9, 18, 9),
+                    // Stack - For display widgets on top of one another
+                    child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => ChampionDetail(name: name,));
+                        },
+                        child: ChampionCard(
+                          name: name,
+                          imageURL: imageURL,
+                        )),
+                  );
                 },
               );
             }
