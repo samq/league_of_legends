@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:league_of_legends/network/remote_service.dart';
 
@@ -27,7 +28,11 @@ class ChampionController extends GetxController {
   void fetchChampionJSON(String name) async {}
 
   // Fetches champion's splash image URL
-  String fetchChampionLoadingImageURL(String name) {
-    return RemoteServices().fetchChampionLoadingImageURL(name);
+  String fetchChampionLoadingImageURL(int index) {
+    String id = getChampionID(index);
+    return RemoteServices().fetchChampionLoadingImageURL(id);
   }
+
+  String getChampionID(int index) => championList[index]['id'];
+  String getChampionName(int index) => championList[index]['name'];
 }

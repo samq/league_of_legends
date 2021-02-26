@@ -21,53 +21,72 @@ class Champions extends StatelessWidget {
         // TODO: Title / Subtitle Text
         // TODO: Search / Filter (Roles and Difficulty) Widget
         Expanded(
-          child: Obx(() {
-            var championList = championController.championList;
-            // TODO: Loading indicator before displaying not available message.
-            if (championList.length == 0) {
-              return Center(
-                child: Text('Champion Data Not Available'),
-              );
-            } else {
-              return GridView.builder(
-                itemCount: championList.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: .67,
-                  // Adjust number of champions displayed based on orientation.
-                  crossAxisCount: (MediaQuery.of(context).orientation ==
-                          Orientation.portrait)
-                      ? 2
-                      : 3,
+          child: Obx(
+            () {
+              Orientation orientation = MediaQuery.of(context).orientation;
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text('League of Legends'),
                 ),
-                // Card - Displays Champion Image and Name
-                itemBuilder: (context, index) {
-                  String name = championList[index]['name'];
-                  String id = championList[index]['id'];
-                  String imageURL =
-                      championController.fetchChampionLoadingImageURL(id);
-                  return Padding(
-                    // Padding adjusted for evenness.
-                    // TODO: Adjust padding with horizontal orientation as well
-                    // TODO: Add constants for padding values.`
-                    padding: (index % 2 == 0)
-                        ? EdgeInsets.fromLTRB(18, 9, 9, 9)
-                        : EdgeInsets.fromLTRB(9, 9, 18, 9),
-                    // Stack - For display widgets on top of one another
-                    child: GestureDetector(
-                        onTap: () {
-                          Get.to(() => ChampionDetail(name: name,));
-                        },
-                        child: ChampionCard(
-                          name: name,
-                          imageURL: imageURL,
-                        )),
-                  );
-                },
+                // TODO: Loading indicator before displaying not available message.
+                body: (championController.championList.length == 0)
+                    ? _buildUnavailableData()
+                    : _buildChampionGrid(orientation: orientation),
               );
-            }
-          }),
+            },
+          ),
         ),
       ],
+    );
+  }
+
+  // Builds Widget for notifying user that champion data cannot be displayed.
+  Widget _buildUnavailableData() {
+    return Center(
+      child: Text('Champion Data Not Available'),
+    );
+  }
+
+  // Builds GridView for displaying champion data
+  Widget _buildChampionGrid({Orientation orientation}) {
+    // GridView.builder - Builds grid with large amount of items
+    return GridView.builder(
+      // Number of items in the grid. Improves maximum scroll extent estimation.
+      itemCount: championController.championList.length,
+      // gridDelegate - Controls the layout of the children in GridView
+      // Layout contains a fixed amount of tiles in the cross axis
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        // Ratio - Cross-Axis to Main-Axis
+        childAspectRatio: .67,
+        // Adjust number of item displayed on cross axis based on orientation.
+        crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
+      ),
+      // Card - Displays Champion Image and Name
+      itemBuilder: (context, index) {
+        return Padding(
+          // Padding adjusted for evenness.
+          // TODO: Adjust padding with horizontal orientation as well
+          // TODO: Add constants for padding values.`
+          padding: (index % 2 == 0)
+              ? EdgeInsets.fromLTRB(18, 9, 9, 9)
+              : EdgeInsets.fromLTRB(9, 9, 18, 9),
+          // Stack - For display widgets on top of one another
+          child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ChampionDetail(
+                        name: championController.getChampionName(index)),
+                  ),
+                );
+              },
+              child: ChampionCard(
+                name: championController.getChampionName(index),
+                imageURL:
+                    championController.fetchChampionLoadingImageURL(index),
+              )),
+        );
+      },
     );
   }
 }

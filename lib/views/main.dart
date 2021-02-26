@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:league_of_legends/controllers/bottomnavigationbar_controller.dart';
-import 'package:league_of_legends/views/champions/champions.dart';
-import 'package:league_of_legends/views/home/home.dart';
-import 'package:league_of_legends/views/items/items.dart';
-import 'package:league_of_legends/views/shop/shop.dart';
 
 void main() {
   runApp(App());
@@ -15,41 +11,58 @@ class App extends StatelessWidget {
   final BottomNavigationBarController bottomNavigationBarController =
       Get.put(BottomNavigationBarController());
 
-  final List<Widget> screens = <Widget>[Home(), Champions(), Items(), Shop()];
-
   @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: Scaffold(
-        // AppBar - Application Name (Placeholder)
-        appBar: AppBar(
-          title: Text('League of Legends'),
-        ),
-        // Centered Screens
-        body: Obx(
-          () => Center(
-            child: screens.elementAt(bottomNavigationBarController.selectedIndex),
+  Widget build(BuildContext context) =>
+      // GetMaterialApp - Required for Get Route Navigation, ETC.
+      // Child - MaterialApp (Default)
+      GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        // WillPopScope
+        home: WillPopScope(
+          // Called to veto attempts by the user to dismiss enclosed ModalRoute
+          // Returns false if navigator can pop, or true otherwise
+          onWillPop: () async => !await bottomNavigationBarController
+              .currentNavigator.currentState
+              .maybePop(),
+          child: Scaffold(
+            body: _buildBody(),
+            // BottomNavigationBar - Home, Champions, Items, Shop
+            bottomNavigationBar: _buildBottomNavigationBar(),
           ),
         ),
-        // BottomNavigationBar - Home, Champions, Items, Shop
-        bottomNavigationBar: Obx(
-          () => BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.group), label: 'Champions'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.construction), label: 'Items'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart), label: 'Shop')
-            ],
-            currentIndex: bottomNavigationBarController.selectedIndex,
-            selectedItemColor: Colors.blue,
-            onTap: (index) =>
-                bottomNavigationBarController.selectedIndex = index,
-            type: BottomNavigationBarType.fixed,
-          ),
+      );
+
+  // Builds the main
+  Widget _buildBody() {
+    return Obx(() {
+      // Navigator - "Nested" Navigator for managing separate stack of widgets
+      // Responsible for managing stack in each "Tab"
+      return Navigator(
+        key: bottomNavigationBarController.currentNavigator,
+        onGenerateRoute: (context) => MaterialPageRoute(
+          builder: (context) => bottomNavigationBarController.currentScreen,
         ),
+      );
+    });
+  }
+
+  // Builds the BottomNavigationBar
+  Widget _buildBottomNavigationBar() {
+    return Obx(
+      () => BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          // Items - Home, Champions, Items, Shop
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Champions'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.construction), label: 'Items'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart), label: 'Shop')
+        ],
+        currentIndex: bottomNavigationBarController.currentIndex,
+        selectedItemColor: Colors.blue,
+        onTap: (index) => bottomNavigationBarController.selectTab(index),
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
